@@ -2,7 +2,7 @@ import cssText from "data-text:~style.css"
 import type { PlasmoCSConfig } from "plasmo"
 import { useEffect, useState } from "react"
 
-import ScreenshotButton from "./components/ScreenshotButton"
+
 import ScreenshotOverlay from "./components/ScreenshotOverlay"
 
 export const config: PlasmoCSConfig = {
@@ -16,6 +16,7 @@ export const getStyle = () => {
   return style
 }
 
+const cacheOverflow =  document.body.style.overflow
 function ContentScript() {
   const [isScreenshotMode, setIsScreenshotMode] = useState(false)
   const handleScreenshot = async (request, sender, sendResponse) => {
@@ -84,6 +85,7 @@ function ContentScript() {
     const messageListener = (message, sender, sendResponse) => {
       console.log("message", message)
         if (message.action === "startScreenshot") {
+            document.body.style.overflow = "hidden"
             setIsScreenshotMode(true)
             sendResponse({ success: true })
             return
@@ -98,6 +100,12 @@ function ContentScript() {
     }
   }, [])
   
+
+  useEffect(() => {
+    if (!isScreenshotMode) {
+      document.body.style.overflow = cacheOverflow
+    }
+  }, [isScreenshotMode])
   return (
     <>
       {/* 右上角截图按钮 */}
