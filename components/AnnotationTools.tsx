@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle, useState } from "react"
 import SpotlightEffect from "./SpotlightEffect"
 import WatermarkTool from "./WatermarkTool"
+import SequenceEffect from "./SequenceEffect"
 
 interface AnnotationToolsProps {
   onCapture: () => void
@@ -36,7 +37,7 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
   const [spotlightOpacity, setSpotlightOpacity] = useState(0.5)
   const [showWatermark, setShowWatermark] = useState(false)
   const [watermarkText, setWatermarkText] = useState("")
-  
+  const [isSequenceMode, setIsSequenceMode] = useState(false)
 
    // 添加操作历史状态
    const [operationHistory, setOperationHistory] = useState<Array<{
@@ -66,6 +67,11 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
   const handleAnnotationClick = (toolId: string) => {
     setActiveAnnotation(toolId)
     // 这里可以添加标注绘制逻辑
+    setIsSequenceMode(toolId === "sequence")
+    setOperationHistory([...operationHistory, {
+        type:'annotation',
+        data: { toolId }
+      }])
   }
 
   
@@ -75,6 +81,7 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
     setActiveAnnotation(`${shape}-spotlight`)
     setSpotlightShape(shape)
     setShowSpotlight(true)
+    setIsSequenceMode(false)
     setOperationHistory([...operationHistory, {
         type: 'spotlight',
         data: { shape }
@@ -393,7 +400,7 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
           onClose={() => setShowSpotlight(false)}
         />
       )}
-      { showWatermark &&  "水印"}
+    
       {/* 渲染水印 */}
       {showWatermark && (
         <WatermarkTool
@@ -402,6 +409,18 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
           onClose={() => setShowWatermark(false)}
         />
       )}
+        {/* 在选区内绘制序列号 */}
+
+      <div style={{ opacity: 1 }} >
+
+      <SequenceEffect
+        selectionArea={selectionArea}
+        onClose={() => setIsSequenceMode(false)}
+      />
+
+      </div>
+     
+ 
     </div>
   )
 })
