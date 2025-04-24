@@ -1,24 +1,32 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import "./style.css"
 
 function IndexPopup() {
-  const [data, setData] = useState("")
+  const [isCapturing, setIsCapturing] = useState(false)
+
+  const handleCapture = async () => {
+    setIsCapturing(true)
+    
+    // 发送消息给后台脚本开始截图
+    chrome.runtime.sendMessage({ action: "startScreenshot" })
+    
+    // 关闭弹窗
+    window.close()
+  }
+  useEffect(() => {
+    handleCapture()
+  }, [])
 
   return (
-    <div
-      style={{
-        padding: 16
-      }}>
-      <h2>
-        Welcome to your{" "}
-        <a href="https://www.plasmo.com" target="_blank">
-          Plasmo
-        </a>{" "}
-        Extension!
-      </h2>
-      <input onChange={(e) => setData(e.target.value)} value={data} />
-      <a href="https://docs.plasmo.com" target="_blank">
-        View Docs
-      </a>
+    <div className="popup-container">
+      <h1>Pixpin 截图工具</h1>
+      <button 
+        onClick={handleCapture}
+        disabled={isCapturing}
+        className="capture-button"
+      >
+        {isCapturing ? "截图中..." : "开始截图"}
+      </button>
     </div>
   )
 }
