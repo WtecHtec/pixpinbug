@@ -26,6 +26,19 @@
     "typescript": "5.3.3"
   },
   "manifest": {
+    "options_ui": {
+      "page": "options.html",
+      "open_in_tab": true
+    },
+    "commands": {
+      "take-screenshot": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+S",
+          "mac": "Command+Shift+S"
+        },
+        "description": "启动截图模式"
+      }
+    },
     "host_permissions": [
       "https://*/*",
       "<all_urls>"

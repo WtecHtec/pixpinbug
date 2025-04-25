@@ -88,10 +88,19 @@ function ContentScript() {
   const handleSubmitBug = async () => {
     const bug = await GlobalState.instance.get('bug')
     console.log('bug', bug)
-    const { type, url } = bug
-    if (type === 1) {
-      let flow = feishuBug(url)
+    const { type, command,} = bug
+    if (type === 'feishu') {
+      let flow = feishuBug(command)
       runAction(flow.datas.nodes, flow.datas.edges)
+    } else {
+      // 自定义
+      try {
+        let commandJson = JSON.parse(command)
+        const result = await runAction(commandJson.datas.nodes, commandJson.datas.edges)
+        console.log('result', result)
+      } catch (error) {
+        console.log('error', error)
+      }
     }
   }
   const handleBgRunActions = async (request, sender, sendResponse) => {

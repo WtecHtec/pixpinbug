@@ -108,11 +108,6 @@ const ScreenshotOverlay: React.FC<ScreenshotOverlayProps> = ({ onClose }) => {
 
   const onSubmitBug = (bug: any) => {
     console.log('bug', bug)
-    let url = "https://project.feishu.cn/product007/issue/create?parentUrl=%2Fproduct007%2Fissue%2Fhomepage"
-    bug = {
-      type: 1,
-      url,
-    }
     handleCapture()
     GlobalState.instance.set('bug', bug)
   }

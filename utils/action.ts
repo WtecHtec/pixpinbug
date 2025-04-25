@@ -197,8 +197,8 @@ async function handlePaste() {
       });
 
       // 4. 触发粘贴事件
-    //   document.dispatchEvent(pasteEvent);
-    //   document.activeElement.dispatchEvent(pasteEvent);
+      document.dispatchEvent(pasteEvent);
+     document.activeElement.dispatchEvent(pasteEvent);
       window.dispatchEvent(pasteEvent);
       console.log('粘贴事件已触发');
                    
@@ -257,7 +257,7 @@ async function runAction(nodes, edges, startSource = 'start', taskId = '') {
         while (currentEdge && currentNode) {
             const { data, id } = currentNode
             if (id === endId) {
-                await waitTime(1000)
+                await waitTime(2000)
                 await handlePaste()
                 console.log('粘贴成功')
                 resolve(1)
