@@ -35,6 +35,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     ACTICON_MAP[action]({ request: message, sender, sendResponse });
     return true
   }
+  if (action === "openOptionsPage") {
+    chrome.runtime.openOptionsPage();
+    return true
+  }
 })
 
 // 截图功能

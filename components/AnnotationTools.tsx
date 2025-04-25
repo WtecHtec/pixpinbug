@@ -308,9 +308,11 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
             <button
               onClick={() => {
                 // Use chrome.runtime.getURL to get the options page URL
-                const optionsUrl = chrome.runtime.getURL('options.html');
-                // Open in a new tab
-                window.open(optionsUrl, '_blank');
+                // const optionsUrl = chrome.runtime.getURL('options.html');
+                // // Open in a new tab
+                // window.open(optionsUrl, '_blank');
+                // 通过消息传递来打开选项页面
+                chrome.runtime.sendMessage({ action: "openOptionsPage" });
               }
               }
               style={{
