@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from "react"
 import AnnotationTools, { type ToolBarEffectRef } from "./AnnotationTools"
+import { feishuBug } from "~flows/feishu"
+import runAction from "~utils/action"
+import GlobalState from "~store/bgglobalstate"
 
 interface ScreenshotOverlayProps {
   onClose: () => void
@@ -102,6 +105,17 @@ const ScreenshotOverlay: React.FC<ScreenshotOverlayProps> = ({ onClose }) => {
       document.removeEventListener("keydown", handleKeyDown)
     }
   }, [onClose])
+
+  const onSubmitBug = (bug: any) => {
+    console.log('bug', bug)
+    let url = "https://project.feishu.cn/product007/issue/create?parentUrl=%2Fproduct007%2Fissue%2Fhomepage"
+    bug = {
+      type: 1,
+      url,
+    }
+    handleCapture()
+    GlobalState.instance.set('bug', bug)
+  }
   
   return (
     <div 
@@ -217,6 +231,7 @@ const ScreenshotOverlay: React.FC<ScreenshotOverlayProps> = ({ onClose }) => {
             onCancel={handleCancel}
             onFullPageMode={toggleFullPageMode}
             selectionArea={selectionStyle}
+            onSubmitBug={onSubmitBug}
           />
         </div>
       )}

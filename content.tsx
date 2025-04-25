@@ -4,6 +4,10 @@ import { useEffect, useState } from "react"
 
 
 import ScreenshotOverlay from "./components/ScreenshotOverlay"
+import runAction from "~utils/action"
+import { BG_RUN_ACTION } from "~actions/config"
+import GlobalState from "~store/bgglobalstate"
+import { feishuBug } from "~flows/feishu"
 
 export const config: PlasmoCSConfig = {
   matches: ["<all_urls>"],
@@ -66,6 +70,7 @@ function ContentScript() {
                 'image/png': blob
               })
               await navigator.clipboard.write([clipboardItem])
+              handleSubmitBug()
               console.log('图片已成功复制到剪贴板')
             } catch (err) {
               console.error('复制到剪贴板失败:', err)
@@ -80,6 +85,23 @@ function ContentScript() {
     }
   }
 
+  const handleSubmitBug = async () => {
+    const bug = await GlobalState.instance.get('bug')
+    console.log('bug', bug)
+    const { type, url } = bug
+    if (type === 1) {
+      let flow = feishuBug(url)
+      runAction(flow.datas.nodes, flow.datas.edges)
+    }
+  }
+  const handleBgRunActions = async (request, sender, sendResponse) => {
+    console.log("request", request)
+    if (request.action === BG_RUN_ACTION) {
+      const { datas } = request
+      const status = await runAction(datas.action.flowData.nodes, datas.action.flowData.edges, datas.nextId, datas.taskId)
+      console.log('status---', status)
+    }
+  }
   // 处理来自扩展图标的消息
   useEffect(() => {
     const messageListener = (message, sender, sendResponse) => {
@@ -91,6 +113,7 @@ function ContentScript() {
             return
         }
         handleScreenshot(message, sender, sendResponse)
+        handleBgRunActions(message, sender, sendResponse)
     }
     
     chrome.runtime.onMessage.addListener(messageListener)

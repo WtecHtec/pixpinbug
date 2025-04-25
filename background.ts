@@ -1,4 +1,7 @@
 import { sendToContentScript } from "@plasmohq/messaging"
+import { ACTICON_MAP } from "~actions"
+import { BG_RUN_ACTION } from "~actions/config"
+import GlobalState from "~store/bgglobalstate"
 
 // 处理来自popup的消息
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -25,6 +28,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   
   if (message.action === "captureFullPage") {
     captureFullPage(sender.tab?.id, sendResponse)
+    return true
+  }
+  const action = message.action
+  if (typeof ACTICON_MAP[action] === 'function') {
+    ACTICON_MAP[action]({ request: message, sender, sendResponse });
     return true
   }
 })
@@ -139,3 +147,24 @@ async function captureFullPage(tabId, sendResponse) {
     sendResponse({ success: false, error: error.message })
   }
 }
+
+
+
+// 监听标签页更新
+  chrome.tabs.onUpdated.addListener( async (tabId, changeInfo, tab) => {
+   
+    if (changeInfo.status === 'complete') {
+      // 标签页已完成加载
+      const openNewTabDatas = GlobalState.instance.get('openNewTab') || []
+      let indxflows =  openNewTabDatas.findIndex((item) => item.tabId === tabId)
+      console.log('标签页已完成加载:', tab.url, openNewTabDatas, tabId)
+      if (indxflows === -1) {
+        return
+      }
+      chrome.tabs.sendMessage(tabId, { action: BG_RUN_ACTION, datas: openNewTabDatas[indxflows] }, function (response) {
+        console.log(response?.result);
+        openNewTabDatas.splice(indxflows, 1)
+        GlobalState.instance.set('openNewTab', openNewTabDatas)
+      });
+    }
+  })

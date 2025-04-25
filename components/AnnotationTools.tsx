@@ -3,11 +3,14 @@ import SpotlightEffect from "./SpotlightEffect"
 import WatermarkTool from "./WatermarkTool"
 import SequenceEffect from "./SequenceEffect"
 import ArrowEffect from "./ArrowEffect"
+import { feishuBug } from "~flows/feishu"
+import runAction from "~utils/action"
 
 interface AnnotationToolsProps {
   onCapture: () => void
   onCancel: () => void
   onFullPageMode: () => void
+  onSubmitBug: (data: any) => void
   selectionArea: {
     left: number
     top: number
@@ -29,7 +32,8 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
       onCapture,
       onCancel,
       onFullPageMode,
-      selectionArea
+      selectionArea,
+      onSubmitBug,
     } = props as AnnotationToolsProps
   const [activeTab, setActiveTab] = useState("basic")
   const [activeAnnotation, setActiveAnnotation] = useState<string | null>(null)
@@ -134,7 +138,6 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
       }
     }
   }
-
   return (
     <div 
       className="annotation-tools-container"
@@ -163,6 +166,20 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
             color: activeTab === "basic" ? "#4285f4" : "inherit"
           }}>
           基本
+        </button>
+          <button 
+          className={activeTab === "bug" ? "active" : ""}
+          onClick={() => setActiveTab("bug")}
+          style={{
+            padding: "6px 12px",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            fontSize: "13px",
+            borderBottom: activeTab === "annotation" ? "2px solid #4285f4" : "none",
+            color: activeTab === "annotation" ? "#4285f4" : "inherit"
+          }}>
+          Bug
         </button>
         {/* <button 
           className={activeTab === "annotation" ? "active" : ""}
@@ -234,6 +251,7 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
               }}>
               完成截图
             </button>
+
             {/* <button 
               onClick={onFullPageMode}
               style={{
@@ -276,6 +294,30 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
           </div>
         )}
         
+        {
+          activeTab === "bug" && (
+            <div
+              className="basic-tools"
+              style={{
+                display: "flex",
+                gap: "8px",
+                flexWrap: "wrap"
+              }}>
+                <button 
+                onClick={onSubmitBug}
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: "#34a853",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer"
+                }}>
+              提交bug
+            </button>
+            </div>
+          )
+        }
         {activeTab === "annotation" && (
           <div 
             className="annotation-tools"
