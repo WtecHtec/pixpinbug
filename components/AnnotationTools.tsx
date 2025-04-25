@@ -2,6 +2,7 @@ import { forwardRef, useImperativeHandle, useState } from "react"
 import SpotlightEffect from "./SpotlightEffect"
 import WatermarkTool from "./WatermarkTool"
 import SequenceEffect from "./SequenceEffect"
+import ArrowEffect from "./ArrowEffect"
 
 interface AnnotationToolsProps {
   onCapture: () => void
@@ -38,7 +39,8 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
   const [showWatermark, setShowWatermark] = useState(false)
   const [watermarkText, setWatermarkText] = useState("")
   const [isSequenceMode, setIsSequenceMode] = useState(false)
-
+  const [currentActive, setCurrentActive] = useState<string | null>(null)
+  const [showArrow, setShowArrow] = useState(false)
    // 添加操作历史状态
    const [operationHistory, setOperationHistory] = useState<Array<{
     type: string;
@@ -66,8 +68,13 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
   // 处理标注工具点击
   const handleAnnotationClick = (toolId: string) => {
     setActiveAnnotation(toolId)
+    setCurrentActive(toolId)
     // 这里可以添加标注绘制逻辑
-    setIsSequenceMode(toolId === "sequence")
+    if (toolId === "sequence") {
+      setIsSequenceMode(true)
+    } else if (toolId === "arrow") {
+      setShowArrow(true)
+    }
     setOperationHistory([...operationHistory, {
         type:'annotation',
         data: { toolId }
@@ -81,7 +88,7 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
     setActiveAnnotation(`${shape}-spotlight`)
     setSpotlightShape(shape)
     setShowSpotlight(true)
-    setIsSequenceMode(false)
+    setCurrentActive('spotlight')
     setOperationHistory([...operationHistory, {
         type: 'spotlight',
         data: { shape }
@@ -116,6 +123,11 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
           setShowWatermark(false)
           break
         case 'annotation':
+          if (lastOperation.data.toolId === 'sequence') {
+            setIsSequenceMode(false)
+          } else if (lastOperation.data.toolId === 'arrow') {
+            setShowArrow(false)
+          }
           setActiveAnnotation(null)
           break
         // 可以添加更多操作类型的处理
@@ -152,7 +164,7 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
           }}>
           基本
         </button>
-        <button 
+        {/* <button 
           className={activeTab === "annotation" ? "active" : ""}
           onClick={() => setActiveTab("annotation")}
           style={{
@@ -165,7 +177,7 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
             color: activeTab === "annotation" ? "#4285f4" : "inherit"
           }}>
           标注
-        </button>
+        </button> */}
         <button 
           className={activeTab === "spotlight" ? "active" : ""}
           onClick={() => setActiveTab("spotlight")}
@@ -392,6 +404,7 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
       {/* 渲染聚光灯效果 */}
       {showSpotlight && (
         <SpotlightEffect
+        isActive={currentActive === "spotlight"}
             selectionArea={selectionArea}
           shape={spotlightShape}
         //   initialPosition={{ x: selectionArea.left, y: selectionArea.top }}
@@ -410,17 +423,22 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
         />
       )}
         {/* 在选区内绘制序列号 */}
-
-      <div style={{ opacity: 1 }} >
-
+    {isSequenceMode && (
       <SequenceEffect
+        isActive={currentActive === "sequence"}
         selectionArea={selectionArea}
         onClose={() => setIsSequenceMode(false)}
       />
+    )}
 
-      </div>
-     
- 
+     {/* 添加箭头效果渲染 */}
+     {showArrow && (
+      <ArrowEffect
+        isActive={currentActive === "arrow"}
+        selectionArea={selectionArea}
+        onClose={() => setShowArrow(false)}
+      />
+    )}
     </div>
   )
 })

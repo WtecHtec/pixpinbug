@@ -12,6 +12,7 @@ interface SequenceData {
 }
 
 interface SequenceEffectProps {
+    isActive: boolean,
   onClose: () => void
   selectionArea: {
     left: number
@@ -22,6 +23,7 @@ interface SequenceEffectProps {
 }
 
 const SequenceEffect: React.FC<SequenceEffectProps> = ({
+    isActive,
   onClose,
   selectionArea
 }) => {
@@ -95,7 +97,7 @@ const SequenceEffect: React.FC<SequenceEffectProps> = ({
   // 处理鼠标释放事件
   const handleMouseUp = () => {
     setIsDragging(false)
-    setActiveSequence(null)
+    // setActiveSequence(null)
   }
 
   // 处理键盘事件
@@ -135,7 +137,8 @@ const SequenceEffect: React.FC<SequenceEffectProps> = ({
         width: selectionArea.width,
         height: selectionArea.height,
         cursor: isDragging ? "grabbing" : "pointer",
-        zIndex: 999998
+        zIndex: 999998,
+        pointerEvents: isActive? "auto" : "none",
       }}
       onClick={handleClick}
       onMouseMove={handleMouseMove}

@@ -18,6 +18,7 @@ interface SpotlightData {
 }
 
 interface SpotlightEffectProps {
+  isActive: boolean,
   shape: "rectangle" | "circle"
   opacity: number
   onClose: () => void
@@ -30,6 +31,7 @@ interface SpotlightEffectProps {
 }
 
 const SpotlightEffect: React.FC<SpotlightEffectProps> = ({
+  isActive,
   shape,
   opacity,
   onClose,
@@ -250,6 +252,7 @@ const SpotlightEffect: React.FC<SpotlightEffectProps> = ({
         width: selectionArea.width + 2,
         height: selectionArea.height + 2,
         zIndex: 999998,
+        pointerEvents: isActive? "auto" : "none",
         cursor: isSelecting ? "crosshair" : isDragging ? "grabbing" : "grab"
       }}
       onMouseDown={handleMouseDown}
