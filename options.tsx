@@ -116,13 +116,13 @@ const Options = () => {
               <span style={{ margin: '0 10px', color: '#666' }}>|</span>
               <span>{config.type === 'feishu' ? '飞书项目' : '自定义'}</span>
               <span style={{ margin: '0 10px', color: '#666' }}>|</span>
-              <span style={{
-                maxWidth: '40vw',
+              <div style={{
+                maxWidth: '80vw',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
-                color: '#666'
-              }}>{config.command}</span>
+                color: '#666',
+              }}>{config.command}</div>
             </div>
             <button
               onClick={() => handleDelete(config.id)}
