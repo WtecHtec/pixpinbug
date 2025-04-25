@@ -1,33 +1,13 @@
-This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
+# 解决
+1. 截图网页图片快速上传
+2. 可操作浏览器自动化，并将截图图片上传指定区域。
+# 使用
+1. 点击图片，选区截图，支持截图、也可以AC 自动化。
+2. 如果使用AC自动化，先去设置页面配置对应的操作
+# AC自动化
+1. 目前支持飞书项目。这个选项是为了方便，因为飞书的项目，是可以直接截图的。直接粘贴到飞书项目缺陷新建的网页链接即可。
+2. 如果是自动化，可以使用[插件](https://chromewebstore.google.com/detail/replaytact-form-automatio/ohkipcncfnmjoeneihmglaadloddopkg?authuser=0&hl=zh-CN) 编排流程，并将流程复制到设置页面。
 
-## Getting Started
-
-First, run the development server:
-
-```bash
-pnpm dev
-# or
-npm run dev
-```
-
-Open your browser and load the appropriate development build. For example, if you are developing for the chrome browser, using manifest v3, use: `build/chrome-mv3-dev`.
-
-You can start editing the popup by modifying `popup.tsx`. It should auto-update as you make changes. To add an options page, simply add a `options.tsx` file to the root of the project, with a react component default exported. Likewise to add a content page, add a `content.ts` file to the root of the project, importing some module and do some logic, then reload the extension on your browser.
-
-For further guidance, [visit our Documentation](https://docs.plasmo.com/)
-
-## Making production build
-
-Run the following:
-
-```bash
-pnpm build
-# or
-npm run build
-```
-
-This should create a production bundle for your extension, ready to be zipped and published to the stores.
-
-## Submit to the webstores
-
-The easiest way to deploy your Plasmo extension is to use the built-in [bpp](https://bpp.browser.market) GitHub action. Prior to using this action however, make sure to build your extension and upload the first version to the store to establish the basic credentials. Then, simply follow [this setup instruction](https://docs.plasmo.com/framework/workflows/submit) and you should be on your way for automated submission!
+# 核心流程
+1. 截图将图片复制，此时你可以直接粘贴下来。
+2. 核心流程是将图片粘贴到指定的区域。因此在编排流程时，需要最后一个操作是：点击DOM即可。

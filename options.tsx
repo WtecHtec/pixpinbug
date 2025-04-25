@@ -110,11 +110,19 @@ const Options = () => {
             }}
           >
             <div>
+              <strong>{config.id}</strong>
+              <span style={{ margin: '0 10px', color: '#666' }}>|</span>
               <strong>{config.name}</strong>
               <span style={{ margin: '0 10px', color: '#666' }}>|</span>
               <span>{config.type === 'feishu' ? '飞书项目' : '自定义'}</span>
               <span style={{ margin: '0 10px', color: '#666' }}>|</span>
-              <span>{config.command}</span>
+              <span style={{
+                maxWidth: '40vw',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                color: '#666'
+              }}>{config.command}</span>
             </div>
             <button
               onClick={() => handleDelete(config.id)}

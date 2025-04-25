@@ -192,7 +192,7 @@ const AnnotationTools = forwardRef<ToolBarEffectRef, AnnotationToolsProps>((prop
             borderBottom: activeTab === "bug" ? "2px solid #4285f4" : "none",
             color: activeTab === "bug" ? "#4285f4" : "inherit"
           }}>
-          Bug
+          AC
         </button>
         {/* <button 
           className={activeTab === "annotation" ? "active" : ""}

@@ -47,7 +47,7 @@ async function captureScreenshot(area, tabId, sendResponse) {
     await new Promise(resolve => setTimeout(resolve, 100))
     // 捕获可见区域
     const dataUrl = await chrome.tabs.captureVisibleTab(null, { format: "png" })
-    console.error("截图成功:", dataUrl)
+    // console.error("截图成功:", dataUrl)
     // 发送消息到content script处理截图
     if (tabId) {
       sendToContentScript({
@@ -156,10 +156,11 @@ async function captureFullPage(tabId, sendResponse) {
 
 // 监听标签页更新
   chrome.tabs.onUpdated.addListener( async (tabId, changeInfo, tab) => {
+    const openNewTabDatas = GlobalState.instance.get('openNewTab') || []
    
-    if (changeInfo.status === 'complete') {
+    if (changeInfo.status === 'complete' && openNewTabDatas.length > 0) {
       // 标签页已完成加载
-      const openNewTabDatas = GlobalState.instance.get('openNewTab') || []
+     
       let indxflows =  openNewTabDatas.findIndex((item) => item.tabId === tabId)
       console.log('标签页已完成加载:', tab.url, openNewTabDatas, tabId)
       if (indxflows === -1) {
