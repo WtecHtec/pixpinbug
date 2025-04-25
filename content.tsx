@@ -8,6 +8,7 @@ import runAction from "~utils/action"
 import { BG_RUN_ACTION } from "~actions/config"
 import GlobalState from "~store/bgglobalstate"
 import { feishuBug } from "~flows/feishu"
+import { detachDebugger } from "~utils/apis"
 
 export const config: PlasmoCSConfig = {
   matches: ["<all_urls>"],
@@ -107,8 +108,10 @@ function ContentScript() {
     console.log("request", request)
     if (request.action === BG_RUN_ACTION) {
       const { datas } = request
-      const status = await runAction(datas.action.flowData.nodes, datas.action.flowData.edges, datas.nextId, datas.taskId)
+      const status = await runAction(datas.action.flowData.nodes, datas.action.flowData.edges, datas.nextId, datas.taskId, datas.tabId)
       console.log('status---', status)
+      // chrome.debugger.detach({tabId: datas.tabId});
+      await detachDebugger(datas.tabId)
     }
   }
   // 处理来自扩展图标的消息

@@ -1,8 +1,8 @@
-import { openNewTab, runActions } from "~utils/apis"
+import { openNewTab, runActions, simulateClickWithDebugger } from "~utils/apis"
 import { uuid } from "~utils/utils"
 
 
-function getDom(selector, timeout = 1000, frequency = 60) {
+function getDom(selector, timeout = 1000, frequency = 10) {
     let current = 0
     return new Promise((resolve) => {
         const findEl = () => {
@@ -35,13 +35,13 @@ function requestAnimationFrameFn(fn) {
         })
     })
 }
-async function handleClick(data) {
+async function handleClick(data, tabId) {
     const { xPath } = data
     const el = await getDom(xPath) as any;
     if (el) {
         try {
             el.focus()
-            await requestAnimationFrameFn(() => {
+            await requestAnimationFrameFn(async () => {
                 var event = new MouseEvent('click', {
                     'view': window,
                     'bubbles': true,
@@ -49,6 +49,12 @@ async function handleClick(data) {
                 });
                 el.dispatchEvent(event);
                 el.click()
+                
+            })
+            const rect = el.getBoundingClientRect();
+            await simulateClickWithDebugger( {
+                rect,
+                tabId
             })
         } catch (error) {
             return 0
@@ -171,7 +177,8 @@ async function handlePaste() {
             
             // // 在活动元素上触发粘贴事件
             // document.activeElement.dispatchEvent(pasteEvent);
-
+ console.log('粘贴操作dom',  document.activeElement);
+             // 2. 检查剪贴板是否包含图片
              // 获取剪贴板数据
              const clipboardItems = await navigator.clipboard.read();
              for (const clipboardItem of clipboardItems) {
@@ -225,6 +232,8 @@ async function handlePaste() {
     }
 }
 
+
+
 const HANDEL_TYPE_EVENT = {
     'click': handleClick,
     'input': handleInput,
@@ -233,7 +242,7 @@ const HANDEL_TYPE_EVENT = {
     'paste': handlePaste,
 }
 
-async function runAction(nodes, edges, startSource = 'start', taskId = '') {
+async function runAction(nodes, edges, startSource = 'start', taskId = '', tabId = '') {
     if (!Array.isArray(nodes) || !Array.isArray(edges)) return
     const cpNode = JSON.parse(JSON.stringify(nodes))
     const endId = 'end'
@@ -255,9 +264,12 @@ async function runAction(nodes, edges, startSource = 'start', taskId = '') {
         let currentNode = nodes.find(item => item.id === currentEdge.target)
         let status = 1
         while (currentEdge && currentNode) {
+            console.log('currentEdge', currentEdge, currentNode)
             const { data, id } = currentNode
             if (id === endId) {
+               
                 await waitTime(2000)
+ 
                 await handlePaste()
                 console.log('粘贴成功')
                 resolve(1)
@@ -267,7 +279,7 @@ async function runAction(nodes, edges, startSource = 'start', taskId = '') {
             if (typeof HANDEL_TYPE_EVENT[handleType] === 'function') {
                 //   await runActions(taskId,  currentEdge.target, 1, { nodes, edges }, new Date().getTime())
                 // 1: 正常  -1: 未找到DOM 0: 处理失败
-                status = await HANDEL_TYPE_EVENT[handleType](data)
+                status = await HANDEL_TYPE_EVENT[handleType](data, tabId)
                 if ([0, -1].includes(status)) {
                     resolve(status)
                     break

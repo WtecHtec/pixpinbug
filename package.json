@@ -47,7 +47,8 @@
       "activeTab",
       "scripting",
       "storage",
-      "tabs"
+      "tabs",
+       "debugger"
     ]
   }
 }

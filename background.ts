@@ -166,10 +166,16 @@ async function captureFullPage(tabId, sendResponse) {
       if (indxflows === -1) {
         return
       }
-      chrome.tabs.sendMessage(tabId, { action: BG_RUN_ACTION, datas: openNewTabDatas[indxflows] }, function (response) {
+      chrome.tabs.sendMessage(tabId, { action: BG_RUN_ACTION, datas: { ...openNewTabDatas[indxflows], tabId}  }, function (response) {
         console.log(response?.result);
         openNewTabDatas.splice(indxflows, 1)
         GlobalState.instance.set('openNewTab', openNewTabDatas)
+        chrome.debugger.attach({tabId: tabId}, "1.3", () => {
+          if (chrome.runtime.lastError) {
+            console.error(chrome.runtime.lastError);
+            return;
+          }
+        });
       });
     }
   })
