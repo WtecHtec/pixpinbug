@@ -8,7 +8,7 @@
 
 # AC自动化
 1. 目前支持飞书项目。这个选项是为了方便，因为飞书的项目，是可以直接截图的。直接粘贴到飞书项目缺陷新建的网页链接即可。
-2. 如果是自动化，可以使用[插件](https://chromewebstore.google.com/detail/replaytact-form-automatio/ohkipcncfnmjoeneihmglaadloddopkg?authuser=0&hl=zh-CN) 编排流程，并将流程复制到设置页面。
+2. 如果是自动化，可以使用[插件](https://chromewebstore.google.com/detail/replaytact-form-automatio/ohkipcncfnmjoeneihmglaadloddopkg?authuser=0&hl=zh-CN) 编排流程，并将流程复制到设置页面。注意开始节点需要“打开新页面”
 
 
 
