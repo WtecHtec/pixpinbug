@@ -92,7 +92,7 @@ const ScreenshotOverlay: React.FC<ScreenshotOverlayProps> = ({ onClose }) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        if (toolbarRef.current.operationHistory.length > 0) {
+        if (toolbarRef.current && toolbarRef.current.operationHistory.length > 0) {
           toolbarRef.current.handleUndo()
           return
         }
